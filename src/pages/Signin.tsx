@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import { loginFormSchema } from "@/lib/schema";
 import type { LoginFormValues } from "@/lib/schema";
 import { supabase } from "@/lib/supabase";
+import { useCurrentUserStore } from "@/lib/jotai/current-user.state";
 
 function Signin() {
   const form = useForm<LoginFormValues>({
@@ -25,6 +26,7 @@ function Signin() {
     },
   });
   const isSubmitting = form.formState.isSubmitting;
+  const currentUserStore = useCurrentUserStore();
   async function onSubmit(values: LoginFormValues) {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: values.email,
@@ -36,9 +38,12 @@ function Signin() {
       toast.success(`ログインしました`, {
         autoClose: 5000,
       });
-      console.log(data.user);
+      currentUserStore.set(data.user);
     }
   }
+  // ユーザーがログインしているときはHomeページにリダイレクトさせる
+  if (currentUserStore.currentUser) return <Navigate replace to="/" />;
+
   return (
     <div className="flex justify-center items-center min-h-screen w-full bg-slate-100 py-10 px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col justify-center items-center w-full max-w-md bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">

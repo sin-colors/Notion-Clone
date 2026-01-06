@@ -1,6 +1,9 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import { useCurrentUserStore } from "./lib/jotai/current-user.state";
 
 function Layout() {
+  const { currentUser } = useCurrentUserStore();
+  if (!currentUser) return <Navigate replace to="/signin" />;
   return (
     <div className="h-full flex">
       <div className="w-32 bg-blue-400"></div>
