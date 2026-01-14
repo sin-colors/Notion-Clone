@@ -28,15 +28,18 @@ function Signin() {
   const isSubmitting = form.formState.isSubmitting;
   const currentUserStore = useCurrentUserStore();
   async function onSubmit(values: LoginFormValues) {
+    console.log("email: ", values.email);
+    console.log("password: ", values.password);
     const { data, error } = await supabase.auth.signInWithPassword({
       email: values.email,
       password: values.password,
     });
-    if (error || data.user == null) {
-      toast.error(error?.message || "エラーが発生しました");
+    if (error || data.user === null) {
+      toast.error("ログインに失敗しました");
+      form.reset();
     } else {
       toast.success(`ログインしました`, {
-        autoClose: 5000,
+        autoClose: 3000,
       });
       currentUserStore.set(data.user);
     }
@@ -97,7 +100,7 @@ function Signin() {
                 type="submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "送信中" : "登録"}
+                {isSubmitting ? "送信中" : "ログイン"}
               </Button>
             </div>
           </form>

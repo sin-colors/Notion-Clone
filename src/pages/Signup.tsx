@@ -34,7 +34,7 @@ function Signup() {
       password: values.password,
       options: { data: { name: values.name } },
     });
-    if (error || data.user == null) {
+    if (error || data.user === null) {
       toast.error(error?.message || "エラーが発生しました");
     } else {
       toast.success(`${data.user.user_metadata.name}さんの登録を完了しました`, {
@@ -130,7 +130,7 @@ function Signup() {
             variant={"link"}
             className="cursor-pointer text-lg text-blue-800 hover:text-blue-700/90"
           >
-            <Link to={"/login"}>ログインへ</Link>
+            <Link to={"/signin"}>ログインへ</Link>
           </Button>
         </p>
       </div>
